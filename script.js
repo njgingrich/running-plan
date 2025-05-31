@@ -85,6 +85,17 @@ function marathonPaceToTime(paceDuration) {
     return secondsToDuration(paceSeconds * 26.2);
 }
 
+// Save duration to localStorage
+function saveDurationToStorage(key, duration) {
+    localStorage.setItem(key, JSON.stringify(duration));
+}
+
+// Load duration from localStorage
+function loadDurationFromStorage(key) {
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : null;
+}
+
 function calculatePaces(marathonPaceDuration) {
     const estimated10kPaceDuration = estimate10kPace(marathonPaceDuration);
 
@@ -151,7 +162,9 @@ function handleDurationInput(e, isTimeInput) {
 document.getElementById('goalPace').addEventListener('input', e => {
     const duration = handleDurationInput(e, false);
     if (duration) {
+        saveDurationToStorage('marathonPace', duration);
         const timeDuration = marathonPaceToTime(duration);
+        saveDurationToStorage('marathonTime', timeDuration);
         document.getElementById('goalTime').value = formatTimeDuration(timeDuration);
         calculatePaces(duration);
     }
@@ -160,18 +173,28 @@ document.getElementById('goalPace').addEventListener('input', e => {
 document.getElementById('goalTime').addEventListener('input', e => {
     const duration = handleDurationInput(e, true);
     if (duration) {
+        saveDurationToStorage('marathonTime', duration);
         const paceDuration = marathonTimeToPace(duration);
+        saveDurationToStorage('marathonPace', paceDuration);
         document.getElementById('goalPace').value = formatPaceDuration(paceDuration);
         calculatePaces(paceDuration);
     }
 });
 
-// Calculate paces on page load if there's a value in either input
+// Calculate paces on page load if there's a value in either input or localStorage
 document.addEventListener('DOMContentLoaded', function() {
     const paceInput = document.getElementById('goalPace');
     const timeInput = document.getElementById('goalTime');
     
-    if (paceInput.value && /^\d{1,2}:\d{2}$/.test(paceInput.value)) {
+    // Try to load from localStorage first
+    const storedPace = loadDurationFromStorage('marathonPace');
+    const storedTime = loadDurationFromStorage('marathonTime');
+    
+    if (storedPace) {
+        paceInput.value = formatPaceDuration(storedPace);
+        timeInput.value = formatTimeDuration(storedTime);
+        calculatePaces(storedPace);
+    } else if (paceInput.value && /^\d{1,2}:\d{2}$/.test(paceInput.value)) {
         const paceDuration = parseDurationString(paceInput.value);
         calculatePaces(paceDuration);
     } else if (timeInput.value && /^\d{1,2}:\d{2}:\d{2}$/.test(timeInput.value)) {
