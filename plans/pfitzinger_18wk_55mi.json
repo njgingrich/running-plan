@@ -11,6 +11,34 @@
         "long_run": "Long Run",
         "race": "Race!"
     },
+    "paces": {
+        "race": {
+            "description": "Your goal race pace",
+            "paceType": "race"
+        },
+        "lactate_threshold": {
+            "description": "Your lactate threshold pace",
+            "paceType": "time",
+            "fast": -10,
+            "slow": -15,
+            "multiplier": 0.9434
+        },
+        "long_run": {
+            "paceType": "pct",
+            "fast": 10,
+            "slow": 20
+        },
+        "recovery": {
+            "paceType": "pct",
+            "fast": 15,
+            "slow": 25
+        },
+        "general_aerobic": {
+            "paceType": "pct",
+            "fast": 15,
+            "slow": 25
+        }
+    },
     "weeks": [
         [
             {

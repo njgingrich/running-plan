@@ -1,17 +1,16 @@
 import 'temporal-polyfill';
+import { PLANS } from './plans';
 
-// These correspond to the files in the plans/ directory
-const KNOWN_PLANS = [
-    'pfitzinger_18wk_55mi'
-];
-
-const LOADED_PLANS = {};
-
-// Convert pace string (MM:SS) to total seconds
-function paceToSeconds(paceStr) {
-    const [minutes, seconds] = paceStr.split(':').map(num => parseInt(num, 10));
-    return minutes * 60 + seconds;
+const State = {
+    plan: null,
+    marathonPace: null,
+    marathonTime: null,
+    longRunPace: null,
+    longRunRange: null,
+    aerobicPace: null,
+    aerobicRange: null,
 }
+window.State = State;
 
 function durationToSeconds({hours = 0, minutes = 0, seconds = 0}) {
     return hours * 3600 + minutes * 60 + seconds;
@@ -86,10 +85,10 @@ function getAdjustedPaces(basePaceDuration, adjustmentType, fastAdjustment, slow
     return [slowPace, secondsToDuration(averageSeconds), fastPace];
 }
 
-// Estimate 10k race pace from marathon pace (95% of marathon pace)
+// Estimate 10k race pace from marathon pace
 function estimate10kPace(marathonPaceDuration) {
     const paceSeconds = durationToSeconds(marathonPaceDuration);
-    return secondsToDuration(paceSeconds * 0.95);
+    return secondsToDuration(paceSeconds / 1.06);
 }
 
 // Format pace range as string (faster to slower)
@@ -181,20 +180,14 @@ function handleDurationInput(e, isTimeInput) {
     return null;
 }
 
-async function loadTrainingPlan(planName) {
-    if (LOADED_PLANS[planName]) {
-        return LOADED_PLANS[planName];
-    }
-
-    const planFile = await fetch(`https://raw.githubusercontent.com/njgingrich/running-plan/refs/heads/main/plans//${planName}.json`);
-    // const planFile = await fetch(`/plans/${planName}.json`);
-    const planData = await planFile.json();
-    LOADED_PLANS[planName] = planData;
-    return planData;
+function updatePaces() {
+    const plan = State.plan;
+    
+    // TODO: generate paces based on plan
 }
 
-async function updateCalendar() {
-    const plan = await loadTrainingPlan('pfitzinger_18wk_55mi');
+function updateCalendar() {
+    const plan = State.plan;
 
     const startDate = document.getElementById('raceDate').value;
     if (!startDate) return; // Don't update if no date selected
@@ -325,12 +318,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Update select options based on known plans
+    State.plan = Object.values(PLANS)[0];
     const trainingPlanSelect = document.getElementById('trainingPlan');
-    const plans = await Promise.all(KNOWN_PLANS.map(loadTrainingPlan));
-    plans.forEach(plan => {
+    Object.entries(PLANS).forEach(([key, plan]) => {
         const option = document.createElement('option');
         option.value = plan.id;
         option.textContent = plan.name;
+        option.selected = plan.id === State.plan.id;
         trainingPlanSelect.appendChild(option);
     });
 
