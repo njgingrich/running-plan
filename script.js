@@ -186,7 +186,8 @@ async function loadTrainingPlan(planName) {
         return LOADED_PLANS[planName];
     }
 
-    const planFile = await fetch(`/plans/${planName}.json`);
+    const planFile = await fetch(`https://raw.githubusercontent.com/njgingrich/running-plan/refs/heads/main/plans/${planName}.json`);
+    // const planFile = await fetch(`/plans/${planName}.json`);
     const planData = await planFile.json();
     LOADED_PLANS[planName] = planData;
     return planData;
