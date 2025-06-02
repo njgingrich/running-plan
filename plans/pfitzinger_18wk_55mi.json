@@ -1,0 +1,715 @@
+{
+    "name": "Pfitzinger 18-Week Training Plan (55mi/week)",
+    "description": "A 18-week training plan based on the Pfitzinger method. Up to 55/ miles per week.",
+    "types": {
+        "rest": "Rest or cross-training",
+        "general_aerobic": "General Aerobic Run",
+        "lactate_threshold": "Lactate Threshold Run",
+        "recovery": "Recovery Run",
+        "long_run": "Long Run",
+        "race": "Race!"
+    },
+    "weeks": [
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 8,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 9,
+                "distanceUnit": "mi",
+                "notes": "4mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 8,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 12,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 8,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 9,
+                "distanceUnit": "mi",
+                "notes": "4mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 8,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 13,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 9,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 10,
+                "distanceUnit": "mi",
+                "notes": "5mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 9,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 14,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 9,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 10,
+                "distanceUnit": "mi",
+                "notes": "5mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 9,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 16,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 9,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 11,
+                "distanceUnit": "mi",
+                "notes": "6mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 10,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 17,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 10,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 11,
+                "distanceUnit": "mi",
+                "notes": "6mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 10,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 18,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 10,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 12,
+                "distanceUnit": "mi",
+                "notes": "7mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 10,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 17,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 10,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 12,
+                "distanceUnit": "mi",
+                "notes": "7mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 11,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 20,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 10,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 12,
+                "distanceUnit": "mi",
+                "notes": "7mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 11,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 17,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 11,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 12,
+                "distanceUnit": "mi",
+                "notes": "7mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 11,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 20,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 11,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 13,
+                "distanceUnit": "mi",
+                "notes": "8mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 11,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 17,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 11,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 13,
+                "distanceUnit": "mi",
+                "notes": "8mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 11,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 20,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 10,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 12,
+                "distanceUnit": "mi",
+                "notes": "7mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 10,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 17,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 10,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 12,
+                "distanceUnit": "mi",
+                "notes": "7mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 10,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 15,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 9,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 10,
+                "distanceUnit": "mi",
+                "notes": "5mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 9,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 12,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 8,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 8,
+                "distanceUnit": "mi",
+                "notes": "4mi @ LT"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 7,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 10,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 6,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi",
+                "notes": "with strides"
+            },
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "long_run",
+                "distance": 8,
+                "distanceUnit": "mi"
+            }
+        ],
+        [
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "general_aerobic",
+                "distance": 6,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 4,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "recovery",
+                "distance": 3,
+                "distanceUnit": "mi",
+                "notes": "with few strides"
+            },
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi"
+            },
+            {
+                "type": "race",
+                "distance": 26.2,
+                "distanceUnit": "mi"
+            }
+        ]
+    ]
+}

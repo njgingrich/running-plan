@@ -5,58 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pfitzinger Running Pace Calculator</title>
     <link rel="stylesheet" href="styles.css">
+
+    <script type="importmap">
+        {
+          "imports": {
+            "temporal-polyfill": "https://unpkg.com/temporal-polyfill@0.3.0/global.min.js"
+          }
+        }
+    </script>
+    <script type="module" src="script.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Running Pace Calculator</h1>
-        <p class="subtitle">Based on Pfitzinger Training Plan</p>
-        
-        <div class="calculator-card">
-            <div class="input-section">
-                <div class="input-group">
-                    <label for="goalPace">Goal Marathon Pace</label>
-                    <input type="text" id="goalPace" placeholder="min:sec per mile (e.g., 8:00)" pattern="[0-9]{1,2}:[0-9]{2}">
+    <div class="page-container">
+        <aside class="sidebar">
+            <h1>Running Pace Calculator</h1>
+            <p class="subtitle">Based on Pfitzinger Training Plan</p>
+            
+            <div class="calculator-card">
+                <div class="input-section">
+                    <div class="input-group">
+                        <label for="raceDate">Race Date</label>
+                        <input type="date" id="raceDate">
+                    </div>
                 </div>
-                <div class="input-divider">
-                    <span>or</span>
+                <div class="input-section">
+                    <div class="input-group">
+                        <label for="raceDate">Training Plan</label>
+                        <select id="trainingPlan">
+                            <option value="pfitzinger_18wk_55mi">Pfitzinger 18-Week (55mi/week)</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label for="goalTime">Goal Marathon Time</label>
-                    <input type="text" id="goalTime" placeholder="h:mm:ss (e.g., 3:30:00)" pattern="[0-9]{1,2}:[0-9]{2}:[0-9]{2}">
+                <div class="input-section">
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="goalPace">Goal Marathon Pace</label>
+                            <input type="text" id="goalPace" placeholder="min:sec (e.g., 8:00)" pattern="[0-9]{1,2}:[0-9]{2}">
+                        </div>
+                        <div class="input-group">
+                            <label for="goalTime">Goal Marathon Time</label>
+                            <input type="text" id="goalTime" placeholder="h:mm:ss (e.g., 3:30:00)" pattern="[0-9]{1,2}:[0-9]{2}:[0-9]{2}">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="calculator-card training-paces">
-            <h2>Training Paces</h2>
-            <div class="results" id="results">
-                <div class="pace-card">
-                    <h3>Marathon Pace Run</h3>
-                    <p class="pace" id="marathonPace">--:-- /mile</p>
-                    <p class="pace-range" id="marathonRange">Target Race Pace</p>
-                    <p class="description">Your goal marathon pace</p>
-                </div>
-                <div class="pace-card">
-                    <h3>Lactate Threshold Run</h3>
-                    <p class="pace" id="thresholdPace">--:-- /mile</p>
-                    <p class="pace-range" id="thresholdRange">--:-- - --:-- /mile</p>
-                    <p class="description">10-15% slower than estimated 10k race pace</p>
-                </div>
-                <div class="pace-card">
-                    <h3>Long Run Pace</h3>
-                    <p class="pace" id="longRunPace">--:-- /mile</p>
-                    <p class="pace-range" id="longRunRange">--:-- - --:-- /mile</p>
-                    <p class="description">10-20% slower than marathon pace</p>
-                </div>
-                <div class="pace-card">
-                    <h3>General Aerobic Run</h3>
-                    <p class="pace" id="aerobicPace">--:-- /mile</p>
-                    <p class="pace-range" id="aerobicRange">--:-- - --:-- /mile</p>
-                    <p class="description">15-25% slower than marathon pace</p>
+            <div class="calculator-card training-paces">
+                <h2>Training Paces</h2>
+                <div class="results" id="results">
+                    <div class="pace-card">
+                        <h3>Lactate Threshold Run</h3>
+                        <div class="pace-info">
+                            <div class="pace-main">
+                                <p class="pace" id="thresholdPace">--:-- /mile</p>
+                            </div>
+                            <div class="pace-range-container">
+                                <p class="pace-range" id="thresholdRange">--:-- - --:-- /mile</p>
+                            </div>
+                        </div>
+                        <p class="description">10-15 seconds slower than est. 10k race pace</p>
+                    </div>
+
+                    <div class="pace-card">
+                        <h3>Marathon Pace Run</h3>
+                        <div class="pace-info">
+                            <div class="pace-main">
+                                <p class="pace" id="marathonPace">--:-- /mile</p>
+                            </div>
+                            <div class="pace-range-container">
+                                <p class="pace-range" id="marathonRange">Target Race Pace</p>
+                            </div>
+                        </div>
+                        <p class="description">Your goal marathon pace</p>
+                    </div>
+
+                    <div class="pace-card">
+                        <h3>Long Run Pace</h3>
+                        <div class="pace-info">
+                            <div class="pace-main">
+                                <p class="pace" id="longRunPace">--:-- /mile</p>
+                            </div>
+                            <div class="pace-range-container">
+                                <p class="pace-range" id="longRunRange">--:-- - --:-- /mile</p>
+                            </div>
+                        </div>
+                        <p class="description">10-20% slower than marathon pace</p>
+                    </div>
+
+                    <div class="pace-card">
+                        <h3>General Aerobic Run</h3>
+                        <div class="pace-info">
+                            <div class="pace-main">
+                                <p class="pace" id="aerobicPace">--:-- /mile</p>
+                            </div>
+                            <div class="pace-range-container">
+                                <p class="pace-range" id="aerobicRange">--:-- - --:-- /mile</p>
+                            </div>
+                        </div>
+                        <p class="description">15-25% slower than marathon pace</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="calculator-card training-plan">
+                <h2>18-Week Training Plan (55 miles/week peak)</h2>
+                <div class="calendar">
+                    <table class="training-table">
+                        <thead>
+                            <tr>
+                                <th>Week</th>
+                                <th>Mon</th>
+                                <th>Tue</th>
+                                <th>Wed</th>
+                                <th>Thu</th>
+                                <th>Fri</th>
+                                <th>Sat</th>
+                                <th>Sun</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calendarBody">
+                            <!-- Calendar content will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
     </div>
-    <script src="script.js"></script>
 </body>
 </html> 
