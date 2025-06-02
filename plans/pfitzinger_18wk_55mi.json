@@ -1,8 +1,10 @@
 {
+    "id": "pfitzinger_18wk_55mi",
     "name": "Pfitzinger 18-Week Training Plan (55mi/week)",
-    "description": "A 18-week training plan based on the Pfitzinger method. Up to 55/ miles per week.",
+    "description": "A 18-week training plan based on the Pfitzinger method. Up to 55 miles per week.",
+    "distance": "marathon",
     "types": {
-        "rest": "Rest or cross-training",
+        "rest": "Recovery",
         "general_aerobic": "General Aerobic Run",
         "lactate_threshold": "Lactate Threshold Run",
         "recovery": "Recovery Run",

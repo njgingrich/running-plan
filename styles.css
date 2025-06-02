@@ -5,10 +5,15 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
+:root {
+    --color-primary: #4299e1;
+    --color-text: #2d3748;
+}
+
 body {
     background-color: #f5f7fa;
-    color: #2d3748;
-    line-height: 1.6;
+    color: var(--color-text);
+    line-height: 1.5;
     min-height: 100vh;
 }
 
@@ -23,6 +28,12 @@ body {
 .sidebar {
     width: 300px;
     flex-shrink: 0;
+}
+
+.sidebar-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
 }
 
 .main-content {
@@ -44,7 +55,6 @@ h2 {
 
 .subtitle {
     color: #4a5568;
-    margin-bottom: 2rem;
 }
 
 .calculator-card {
@@ -95,7 +105,7 @@ input, select {
 
 input:focus, select:focus {
     outline: none;
-    border-color: #4299e1;
+    border-color: var(--color-primary);
 }
 
 .training-paces {
@@ -140,7 +150,7 @@ input:focus, select:focus {
 .pace {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #4299e1;
+    color: var(--color-primary);
     white-space: nowrap;
 }
 
@@ -151,7 +161,7 @@ input:focus, select:focus {
 
 .pace-range {
     font-size: 0.8rem;
-    color: #4299e1;
+    color: var(--color-primary);
     font-weight: 600;
 }
 
@@ -167,6 +177,11 @@ input:focus, select:focus {
     overflow-x: auto;
 }
 
+#training-plan-description {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
 .training-table {
     width: 100%;
     border-collapse: collapse;
@@ -175,7 +190,7 @@ input:focus, select:focus {
 
 .training-table th {
     background: #e2e8f0;
-    padding: 0.75rem;
+    padding: 0.5rem;
     font-weight: 600;
     color: #2d3748;
     border-bottom: 2px solid #e2e8f0;
@@ -186,11 +201,11 @@ input:focus, select:focus {
     color: #4a5568;
     font-size: 0.85rem;
     border-bottom: 2px solid #e2e8f0;
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 0.5rem;
 }
 
 .training-table td {
-    padding: 0.75rem;
+    padding: 0.5rem;
     border: 1px solid #e2e8f0;
     vertical-align: top;
 }
@@ -242,10 +257,11 @@ input:focus, select:focus {
 }
 
 .training-table td.date-cell {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: #4a5568;
     background: #f1f4f6;
-    border-bottom-color: #4299e1;
+    border-bottom-color: var(--color-primary);
+    padding: 0.25rem 0.5rem;
 }
 
 @media (max-width: 1200px) {

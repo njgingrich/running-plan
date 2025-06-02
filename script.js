@@ -1,5 +1,12 @@
 import 'temporal-polyfill';
 
+// These correspond to the files in the plans/ directory
+const KNOWN_PLANS = [
+    'pfitzinger_18wk_55mi'
+];
+
+const LOADED_PLANS = {};
+
 // Convert pace string (MM:SS) to total seconds
 function paceToSeconds(paceStr) {
     const [minutes, seconds] = paceStr.split(':').map(num => parseInt(num, 10));
@@ -175,8 +182,14 @@ function handleDurationInput(e, isTimeInput) {
 }
 
 async function loadTrainingPlan(planName) {
+    if (LOADED_PLANS[planName]) {
+        return LOADED_PLANS[planName];
+    }
+
     const planFile = await fetch(`/plans/${planName}.json`);
-    return planFile.json();
+    const planData = await planFile.json();
+    LOADED_PLANS[planName] = planData;
+    return planData;
 }
 
 async function updateCalendar() {
@@ -188,8 +201,15 @@ async function updateCalendar() {
     const raceDate = Temporal.PlainDate.from(startDate);
     const trainingStartDate = raceDate.subtract({days: 6}).subtract({weeks: plan.weeks.length-1});
     
-    const calendarBody = document.getElementById('calendarBody');
+    const calendarBody = document.getElementById('calendar-body');
     calendarBody.innerHTML = '';
+
+    const trainingPlanTitle = document.getElementById('training-plan-title');
+    trainingPlanTitle.textContent = plan.name;
+    if (plan.description) {
+        const trainingPlanDescription = document.getElementById('training-plan-description');
+        trainingPlanDescription.textContent = plan.description;
+    }
 
     plan.weeks.forEach((week, weekIndex) => {
         const weekStartDate = trainingStartDate.add({weeks: weekIndex});
@@ -282,7 +302,7 @@ document.getElementById('goalTime').addEventListener('input', e => {
 });
 
 // Load saved values on page load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const paceInput = document.getElementById('goalPace');
     const timeInput = document.getElementById('goalTime');
     
@@ -302,6 +322,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const paceDuration = marathonTimeToPace(timeDuration);
         calculatePaces(paceDuration);
     }
+
+    // Update select options based on known plans
+    const trainingPlanSelect = document.getElementById('trainingPlan');
+    const plans = await Promise.all(KNOWN_PLANS.map(loadTrainingPlan));
+    plans.forEach(plan => {
+        const option = document.createElement('option');
+        option.value = plan.id;
+        option.textContent = plan.name;
+        trainingPlanSelect.appendChild(option);
+    });
 
     updateCalendar();
 }); 
