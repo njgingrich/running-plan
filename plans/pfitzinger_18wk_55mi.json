@@ -19,8 +19,8 @@
         "lactate_threshold": {
             "description": "Your lactate threshold pace",
             "paceType": "time",
-            "fast": -10,
-            "slow": -15,
+            "fast": 10,
+            "slow": 15,
             "multiplier": 0.9434
         },
         "long_run": {

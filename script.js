@@ -59,9 +59,9 @@ function adjustPaceByPercentage(paceDuration, percentageSlower) {
 }
 
 // Calculate time-based adjustment of pace
-function adjustPaceByTime(paceDuration, secondsSlower) {
+function adjustPaceByTime(paceDuration, secondsAdjustment) {
     const paceSeconds = durationToSeconds(paceDuration);
-    const adjustedSeconds = paceSeconds + secondsSlower;
+    const adjustedSeconds = paceSeconds + secondsAdjustment;
     return secondsToDuration(adjustedSeconds);
 }
 
@@ -69,10 +69,10 @@ function adjustPaceByTime(paceDuration, secondsSlower) {
 function getAdjustedPaces(basePaceDuration, adjustmentType, fastAdjustment, slowAdjustment) {
     let fastPace, slowPace;
     
-    if (adjustmentType === 'PCT') {
+    if (adjustmentType === 'pct') {
         slowPace = adjustPaceByPercentage(basePaceDuration, slowAdjustment);
         fastPace = adjustPaceByPercentage(basePaceDuration, fastAdjustment);
-    } else { // TIME
+    } else { // time
         slowPace = adjustPaceByTime(basePaceDuration, slowAdjustment);
         fastPace = adjustPaceByTime(basePaceDuration, fastAdjustment);
     }
@@ -119,32 +119,42 @@ function loadDurationFromStorage(key) {
 }
 
 function calculatePaces(marathonPaceDuration) {
+    const plan = State.plan;
+    if (!plan || !plan.paces) return;
+
+    // Calculate base paces
     const estimated10kPaceDuration = estimate10kPace(marathonPaceDuration);
 
-    // Calculate various training paces with ranges
-    // Long Run: 10-20% slower than marathon pace
-    const [longRunSlowPace, longRunMiddlePace, longRunFastPace] = 
-        getAdjustedPaces(marathonPaceDuration, 'PCT', 10, 20);
-    
-    // General Aerobic: 15-25% slower than marathon pace
-    const [aerobicSlowPace, aerobicMiddlePace, aerobicFastPace] = 
-        getAdjustedPaces(marathonPaceDuration, 'PCT', 15, 25);
-    
-    // Lactate Threshold: 10-15 seconds slower per mile than 10k pace
-    const [thresholdSlowPace, thresholdMiddlePace, thresholdFastPace] = 
-        getAdjustedPaces(estimated10kPaceDuration, 'TIME', 10, 15);
+    // Process each pace type from the plan
+    Object.entries(plan.paces).forEach(([type, config]) => {
+        const paceElement = document.getElementById(`${type}Pace`);
+        const rangeElement = document.getElementById(`${type}Range`);
+        if (!paceElement || !rangeElement) return;
 
-    // Update the display with middle paces
-    document.getElementById('longRunPace').textContent = `${formatPaceDuration(longRunMiddlePace)} /mile`;
-    document.getElementById('marathonPace').textContent = `${formatPaceDuration(marathonPaceDuration)} /mile`;
-    document.getElementById('aerobicPace').textContent = `${formatPaceDuration(aerobicMiddlePace)} /mile`;
-    document.getElementById('thresholdPace').textContent = `${formatPaceDuration(thresholdMiddlePace)} /mile`;
+        let basePace = marathonPaceDuration;
+        if (config.multiplier) {
+            // If there's a multiplier, apply it to the base pace
+            const baseSeconds = durationToSeconds(basePace);
+            basePace = secondsToDuration(baseSeconds * config.multiplier);
+        }
 
-    // Update ranges (faster to slower)
-    document.getElementById('longRunRange').textContent = formatPaceRange(longRunFastPace, longRunSlowPace);
-    document.getElementById('marathonRange').textContent = 'Target Race Pace';
-    document.getElementById('aerobicRange').textContent = formatPaceRange(aerobicFastPace, aerobicSlowPace);
-    document.getElementById('thresholdRange').textContent = formatPaceRange(thresholdFastPace, thresholdSlowPace);
+        if (config.paceType === 'race') {
+            // Race pace is just the marathon pace
+            paceElement.textContent = `${formatPaceDuration(marathonPaceDuration)} /mile`;
+            rangeElement.textContent = 'Target Race Pace';
+        } else {
+            // Calculate adjusted paces based on configuration
+            const [slowPace, middlePace, fastPace] = getAdjustedPaces(
+                basePace,
+                config.paceType,
+                config.fast,
+                config.slow
+            );
+
+            paceElement.textContent = `${formatPaceDuration(middlePace)} /mile`;
+            rangeElement.textContent = formatPaceRange(fastPace, slowPace);
+        }
+    });
 }
 
 // Handle duration input formatting and return parsed duration
@@ -183,7 +193,55 @@ function handleDurationInput(e, isTimeInput) {
 function updatePaces() {
     const plan = State.plan;
     
-    // TODO: generate paces based on plan
+    // Generate pace cards based on plan configuration
+    const resultsContainer = document.getElementById('results');
+    resultsContainer.innerHTML = '';
+
+    Object.entries(plan.paces).forEach(([type, config]) => {
+        const card = document.createElement('div');
+        card.className = 'pace-card';
+
+        const title = document.createElement('h3');
+        title.textContent = plan.types[type] || type;
+        card.appendChild(title);
+
+        const paceInfo = document.createElement('div');
+        paceInfo.className = 'pace-info';
+
+        const paceMain = document.createElement('div');
+        paceMain.className = 'pace-main';
+        const pace = document.createElement('p');
+        pace.className = 'pace';
+        pace.id = `${type}Pace`;
+        pace.textContent = '--:-- /mile';
+        paceMain.appendChild(pace);
+        paceInfo.appendChild(paceMain);
+
+        const paceRangeContainer = document.createElement('div');
+        paceRangeContainer.className = 'pace-range-container';
+        const paceRange = document.createElement('p');
+        paceRange.className = 'pace-range';
+        paceRange.id = `${type}Range`;
+        paceRange.textContent = '--:-- - --:-- /mile';
+        paceRangeContainer.appendChild(paceRange);
+        paceInfo.appendChild(paceRangeContainer);
+
+        card.appendChild(paceInfo);
+
+        const description = document.createElement('p');
+        description.className = 'description';
+        description.textContent = config.description || '';
+        card.appendChild(description);
+
+        resultsContainer.appendChild(card);
+    });
+
+    // Recalculate paces if we have a marathon pace
+    const paceInput = document.getElementById('goalPace');
+    if (paceInput.value && /^\d{1,2}:\d{2}$/.test(paceInput.value)) {
+        const paceDuration = parseDurationString(paceInput.value);
+        calculatePaces(paceDuration);
+    }
 }
 
 function updateCalendar() {
@@ -328,5 +386,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         trainingPlanSelect.appendChild(option);
     });
 
+    updatePaces();
+    updateCalendar();
+});
+
+// Add event listener for plan changes
+document.getElementById('trainingPlan').addEventListener('change', (e) => {
+    State.plan = PLANS[e.target.value];
+    updatePaces();
     updateCalendar();
 }); 
