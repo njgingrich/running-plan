@@ -192,6 +192,7 @@ function handleDurationInput(e, isTimeInput) {
 
 function updatePaces() {
     const plan = State.plan;
+    if (!plan) return;
     
     // Generate pace cards based on plan configuration
     const resultsContainer = document.getElementById('results');
@@ -246,12 +247,14 @@ function updatePaces() {
 
 function updateCalendar() {
     const plan = State.plan;
+    if (!plan) return;
 
     const startDate = document.getElementById('raceDate').value;
     if (!startDate) return; // Don't update if no date selected
 
     const raceDate = Temporal.PlainDate.from(startDate);
-    const trainingStartDate = raceDate.subtract({days: 6}).subtract({weeks: plan.weeks.length-1});
+    const numWeeksInPlan = plan.weeks.length;
+    const trainingStartDate = raceDate.subtract({days: 6}).subtract({weeks: numWeeksInPlan - 1});
     
     const calendarBody = document.getElementById('calendar-body');
     calendarBody.innerHTML = '';
@@ -265,15 +268,34 @@ function updateCalendar() {
 
     plan.weeks.forEach((week, weekIndex) => {
         const weekStartDate = trainingStartDate.add({weeks: weekIndex});
-        
+        const totalMiles = week.reduce((acc, day) => acc + day.distance, 0);
 
         // Create row for dates
         const dateRow = document.createElement('tr');
         // Add week number (rowspan=2)
         const weekCell = document.createElement('td');
+        const weekCellContainer = document.createElement('div');
         weekCell.className = 'week-number';
         weekCell.setAttribute('rowspan', '2');
-        weekCell.textContent = `Week ${weekIndex + 1}`;
+        weekCellContainer.className = 'week-cell-container';
+
+        // Create week number span
+        const weekNumberSpan = document.createElement('span');
+        weekNumberSpan.textContent = `Week ${weekIndex + 1}`;
+        weekCellContainer.appendChild(weekNumberSpan);
+
+        // Create weeks to goal span
+        const weeksToGoalSpan = document.createElement('span');
+        weeksToGoalSpan.textContent = `(${numWeeksInPlan - 1 - weekIndex} to goal)`;
+        weekCellContainer.appendChild(weeksToGoalSpan);
+
+        // Create total miles span
+        const totalMilesSpan = document.createElement('span');
+        totalMilesSpan.className = 'total-volume';
+        totalMilesSpan.textContent = `${totalMiles} miles`;
+        weekCellContainer.appendChild(totalMilesSpan);
+
+        weekCell.appendChild(weekCellContainer);
         dateRow.appendChild(weekCell);
 
         week.forEach((_, dayIndex) => {
@@ -376,13 +398,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Update select options based on known plans
-    State.plan = Object.values(PLANS)[0];
     const trainingPlanSelect = document.getElementById('trainingPlan');
+    const option = document.createElement('option');
+    option.value = "";
+    option.textContent = "Select a plan";
+    trainingPlanSelect.appendChild(option);
+
     Object.entries(PLANS).forEach(([key, plan]) => {
         const option = document.createElement('option');
         option.value = plan.id;
         option.textContent = plan.name;
-        option.selected = plan.id === State.plan.id;
         trainingPlanSelect.appendChild(option);
     });
 

@@ -1,7 +1,7 @@
 {
-    "id": "pfitzinger_18wk_55mi",
-    "name": "Pfitzinger 18-Week Training Plan (55mi/week)",
-    "description": "A 18-week training plan based on the Pfitzinger method. Up to 55 miles per week.",
+    "id": "pfitzinger_12wk_55mi",
+    "name": "Pfitzinger 12-Week Training Plan (55mi/week)",
+    "description": "A 12-week training plan based on the Pfitzinger method. Up to 55 miles per week.",
     "distance": "marathon",
     "types": {
         "rest": "Recovery",
@@ -58,10 +58,10 @@
                 "notes": "Rest or cross-training"
             },
             {
-                "type": "lactate_threshold",
+                "type": "general_aerobic",
                 "distance": 8,
                 "distanceUnit": "mi",
-                "notes": "4mi @ LT"
+                "notes": "6x 100m strides"
             },
             {
                 "type": "rest",
@@ -72,47 +72,6 @@
             {
                 "type": "general_aerobic",
                 "distance": 9,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
-            },
-            {
-                "type": "recovery",
-                "distance": 4,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "long_run",
-                "distance": 12,
-                "distanceUnit": "mi"
-            }
-        ],
-        [
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
-            },
-            {
-                "type": "lactate_threshold",
-                "distance": 8,
-                "distanceUnit": "mi",
-                "notes": "6x 10s hill sprints & 8x 100m strides"
-            },
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
-            },
-            {
-                "type": "general_aerobic",
-                "distance": 10,
                 "distanceUnit": "mi"
             },
             {
@@ -141,14 +100,15 @@
                 "notes": "Rest or cross-training"
             },
             {
-                "type": "general_aerobic",
-                "distance": 10,
+                "type": "long_run",
+                "distance": 11,
                 "distanceUnit": "mi"
             },
             {
-                "type": "recovery",
-                "distance": 4,
-                "distanceUnit": "mi"
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
             },
             {
                 "type": "lactate_threshold",
@@ -164,47 +124,7 @@
             },
             {
                 "type": "recovery",
-                "distance": 4,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "long_run",
-                "distance": 14,
-                "distanceUnit": "mi"
-            }
-        ],
-        [
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
-            },
-            {
-                "type": "lactate_threshold",
-                "distance": 8,
-                "distanceUnit": "mi",
-                "notes": "6x 10s hill sprints & 8x 100m strides"
-            },
-            {
-                "type": "recovery",
                 "distance": 5,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "general_aerobic",
-                "distance": 10,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
-            },
-            {
-                "type": "recovery",
-                "distance": 4,
                 "distanceUnit": "mi"
             },
             {
@@ -221,19 +141,19 @@
                 "notes": "Rest or cross-training"
             },
             {
-                "type": "lactate_threshold",
-                "distance": 9,
+                "type": "general_aerobic",
+                "distance": 8,
                 "distanceUnit": "mi",
-                "notes": "5mi @ LT"
+                "notes": "6x 10s hill sprints & 8x 100m strides"
             },
             {
                 "type": "recovery",
-                "distance": 5,
+                "distance": 4,
                 "distanceUnit": "mi"
             },
             {
-                "type": "general_aerobic",
-                "distance": 10,
+                "type": "long_run",
+                "distance": 11,
                 "distanceUnit": "mi"
             },
             {
@@ -244,7 +164,7 @@
             },
             {
                 "type": "recovery",
-                "distance": 5,
+                "distance": 4,
                 "distanceUnit": "mi"
             },
             {
@@ -262,55 +182,15 @@
                 "notes": "Rest or cross-training"
             },
             {
-                "type": "lactate_threshold",
-                "distance": 8,
-                "distanceUnit": "mi",
-                "notes": "10x 100m strides"
-            },
-            {
                 "type": "recovery",
                 "distance": 5,
                 "distanceUnit": "mi"
-            },
-            {
-                "type": "general_aerobic",
-                "distance": 8,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
-            },
-            {
-                "type": "recovery",
-                "distance": 4,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "long_run",
-                "distance": 12,
-                "distanceUnit": "mi"
-            }
-        ],
-        [
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
             },
             {
                 "type": "lactate_threshold",
                 "distance": 10,
                 "distanceUnit": "mi",
                 "notes": "5mi @ LT"
-            },
-            {
-                "type": "recovery",
-                "distance": 4,
-                "distanceUnit": "mi"
             },
             {
                 "type": "long_run",
@@ -324,14 +204,13 @@
                 "notes": "Rest or cross-training"
             },
             {
-                "type": "general_aerobic",
-                "distance": 7,
-                "distanceUnit": "mi",
-                "notes": "8x 100m strides"
+                "type": "recovery",
+                "distance": 5,
+                "distanceUnit": "mi"
             },
             {
                 "type": "long_run",
-                "distance": 18,
+                "distance": 17,
                 "distanceUnit": "mi"
             }
         ],
@@ -343,10 +222,10 @@
                 "notes": "Rest or cross-training"
             },
             {
-                "type": "recovery",
-                "distance": 7,
+                "type": "rest",
+                "distance": 0,
                 "distanceUnit": "mi",
-                "notes": "6x 100m strides"
+                "notes": "Rest or cross-training"
             },
             {
                 "type": "long_run",
@@ -361,9 +240,9 @@
             },
             {
                 "type": "lactate_threshold",
-                "distance": 10,
+                "distance": 9,
                 "distanceUnit": "mi",
-                "notes": "6mi @ LT"
+                "notes": "4mi @ LT"
             },
             {
                 "type": "recovery",
@@ -372,7 +251,7 @@
             },
             {
                 "type": "long_run",
-                "distance": 20,
+                "distance": 16,
                 "distanceUnit": "mi"
             }
         ],
@@ -385,17 +264,18 @@
             },
             {
                 "type": "recovery",
-                "distance": 6,
+                "distance": 5,
                 "distanceUnit": "mi"
+            },
+            {
+                "type": "interval",
+                "distance": 10,
+                "distanceUnit": "mi",
+                "notes": "5x 1000m @ 5k pace, jog 50-90% interval time"
             },
             {
                 "type": "long_run",
-                "distance": 14,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "recovery",
-                "distance": 6,
+                "distance": 12,
                 "distanceUnit": "mi"
             },
             {
@@ -412,7 +292,7 @@
             },
             {
                 "type": "long_run",
-                "distance": 16,
+                "distance": 15,
                 "distanceUnit": "mi",
                 "notes": "12mi @ marathon pace"
             }
@@ -425,68 +305,27 @@
                 "notes": "Rest or cross-training"
             },
             {
-                "type": "general_aerobic",
-                "distance": 8,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "lactate_threshold",
-                "distance": 8,
-                "distanceUnit": "mi",
-                "notes": "5x 800m @ 5k pace, jog 50-90% interval time"
-            },
-            {
                 "type": "recovery",
-                "distance": 5,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
-            },
-            {
-                "type": "general_aerobic",
-                "distance": 8,
-                "distanceUnit": "mi",
-                "notes": "6x 10s hill sprints & 8x 100m strides"
-            },
-            {
-                "type": "long_run",
-                "distance": 14,
-                "distanceUnit": "mi"
-            }
-        ],
-        [
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
-            },
-            {
-                "type": "recovery",
-                "distance": 7,
+                "distance": 6,
                 "distanceUnit": "mi",
                 "notes": "6x 100m strides"
-            },
-            {
-                "type": "lactate_threshold",
-                "distance": 11,
-                "distanceUnit": "mi",
-                "notes": "7mi @ LT"
-            },
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
             },
             {
                 "type": "long_run",
                 "distance": 12,
                 "distanceUnit": "mi"
+            },
+            {
+                "type": "rest",
+                "distance": 0,
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
+            },
+            {
+                "type": "lactate_threshold",
+                "distance": 12,
+                "distanceUnit": "mi",
+                "notes": "7mi @ LT"
             },
             {
                 "type": "recovery",
@@ -507,90 +346,7 @@
                 "notes": "Rest or cross-training"
             },
             {
-                "type": "lactate_threshold",
-                "distance": 8,
-                "distanceUnit": "mi",
-                "notes": "5x 600m @ 5k pace, jog 50-90% interval time"
-            },
-            {
-                "type": "long_run",
-                "distance": 12,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
-            },
-            {
-                "type": "recovery",
-                "distance": 5,
-                "distanceUnit": "mi",
-                "notes": "6x 100m strides"
-            },
-            {
-                "type": "race",
-                "distance": 10,
-                "distanceUnit": "mi",
-                "notes": "8k-15k tune-up race"
-            },
-            {
-                "type": "long_run",
-                "distance": 17,
-                "distanceUnit": "mi"
-            }
-        ],
-        [
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
-            },
-            {
-                "type": "general_aerobic",
-                "distance": 8,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "lactate_threshold",
-                "distance": 9,
-                "distanceUnit": "mi",
-                "notes": "5x 1000m @ 5k pace, jog 50-90% interval time"
-            },
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
-            },
-            {
-                "type": "long_run",
-                "distance": 12,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "recovery",
-                "distance": 5,
-                "distanceUnit": "mi"
-            },
-            {
-                "type": "long_run",
-                "distance": 18,
-                "distanceUnit": "mi",
-                "notes": "14mi @ marathon pace"
-            }
-        ],
-        [
-            {
-                "type": "rest",
-                "distance": 0,
-                "distanceUnit": "mi",
-                "notes": "Rest or cross-training"
-            },
-            {
-                "type": "lactate_threshold",
+                "type": "interval",
                 "distance": 8,
                 "distanceUnit": "mi",
                 "notes": "5x 600m @ 5k pace, jog 50-90% interval time"
@@ -638,7 +394,7 @@
                 "notes": "6x 100m strides"
             },
             {
-                "type": "lactate_threshold",
+                "type": "interval",
                 "distance": 10,
                 "distanceUnit": "mi",
                 "notes": "4x 1200m @ 5k pace, jog 50-90% interval time"
@@ -673,7 +429,7 @@
                 "notes": "Rest or cross-training"
             },
             {
-                "type": "lactate_threshold",
+                "type": "interval",
                 "distance": 8,
                 "distanceUnit": "mi",
                 "notes": "5x 600m @ 5k pace, jog 50-90% interval time"
@@ -699,7 +455,7 @@
                 "type": "race",
                 "distance": 10,
                 "distanceUnit": "mi",
-                "notes": "8k-10k tune-up race"
+                "notes": "8-10k tune-up race"
             },
             {
                 "type": "long_run",
@@ -711,7 +467,8 @@
             {
                 "type": "rest",
                 "distance": 0,
-                "distanceUnit": "mi"
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
             },
             {
                 "type": "recovery",
@@ -720,7 +477,7 @@
                 "notes": "8x 100m strides"
             },
             {
-                "type": "lactate_threshold",
+                "type": "interval",
                 "distance": 8,
                 "distanceUnit": "mi",
                 "notes": "4x 1200m @ 5k pace, jog 50-90% interval time"
@@ -728,7 +485,8 @@
             {
                 "type": "rest",
                 "distance": 0,
-                "distanceUnit": "mi"
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
             },
             {
                 "type": "recovery",
@@ -739,7 +497,8 @@
             {
                 "type": "rest",
                 "distance": 0,
-                "distanceUnit": "mi"
+                "distanceUnit": "mi",
+                "notes": "Rest or cross-training"
             },
             {
                 "type": "long_run",

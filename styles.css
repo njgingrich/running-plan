@@ -249,11 +249,23 @@ input:focus, select:focus {
 }
 
 .week-number {
-    min-width: 90px;
+    min-width: 100px;
     font-weight: 600;
     color: #2d3748;
     background: #f7fafc;
     vertical-align: middle;
+}
+.week-cell-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 0.25rem;
+}
+.week-cell-container .total-volume {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: #4a5568;
 }
 
 .training-table td.date-cell {
