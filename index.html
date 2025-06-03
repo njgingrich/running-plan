@@ -63,8 +63,18 @@
 
         <main class="main-content">
             <div class="calculator-card training-plan">
-                <h2 id="training-plan-title">Select a plan</h2>
-                <h3 id="training-plan-description" class="subtitle"></h3>
+                <div class="plan-header">
+                    <div class="plan-title">
+                        <h2 id="training-plan-title">Select a plan</h2>
+                        <h3 id="training-plan-description" class="subtitle"></h3>
+                    </div>
+                    <button id="export-plan" class="export-button" style="display: none;">
+                        <svg width="16" height="16" viewBox="0 0 16 16">
+                            <path d="M8 12l-4.5-4.5 1.5-1.5L7 8v-6h2v6l2-2 1.5 1.5L8 12zM3 14v-2h10v2H3z"/>
+                        </svg>
+                        Add to calendar
+                    </button>
+                </div>
                 <div class="calendar">
                     <table class="training-table">
                         <thead>

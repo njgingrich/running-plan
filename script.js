@@ -247,7 +247,18 @@ function updatePaces() {
 
 function updateCalendar() {
     const plan = State.plan;
-    if (!plan) return;
+    console.log({plan})
+
+    const exportButton = document.getElementById('export-plan');
+    exportButton.style.display = State.plan ? 'flex' : 'none';
+    if (!plan) {
+        // clear calendar, hide button
+        const calendarBody = document.getElementById('calendar-body');
+        calendarBody.innerHTML = '';
+        const exportButton = document.getElementById('export-plan');
+        exportButton.style.display = 'none';
+        return;
+    }
 
     const startDate = document.getElementById('raceDate').value;
     if (!startDate) return; // Don't update if no date selected
@@ -375,6 +386,26 @@ document.getElementById('goalTime').addEventListener('input', e => {
     calculatePaces(paceDuration);
 });
 
+document.getElementById('trainingPlan').addEventListener('change', e => {
+    console.log(e.target.value);
+    if (e.target.value == "") {
+        State.plan = null;
+    } else {
+        State.plan = PLANS[e.target.value];
+    }
+
+    saveDurationToStorage('trainingPlan', e.target.value);
+    updatePaces();
+    updateCalendar();
+});
+
+
+// Add event listener for export button
+document.getElementById('export-plan').addEventListener('click', () => {
+    // TODO: Implement export functionality
+    console.log('Export clicked');
+}); 
+
 // Load saved values on page load
 document.addEventListener('DOMContentLoaded', async () => {
     const paceInput = document.getElementById('goalPace');
@@ -383,6 +414,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Try to load from localStorage first
     const storedPace = loadDurationFromStorage('marathonPace');
     const storedTime = loadDurationFromStorage('marathonTime');
+    const storedPlan = loadDurationFromStorage('trainingPlan');
     
     if (storedPace) {
         paceInput.value = formatPaceDuration(storedPace);
@@ -397,6 +429,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         calculatePaces(paceDuration);
     }
 
+    if (storedPlan) {
+        State.plan = PLANS[storedPlan];
+    }
+
     // Update select options based on known plans
     const trainingPlanSelect = document.getElementById('trainingPlan');
     const option = document.createElement('option');
@@ -408,16 +444,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const option = document.createElement('option');
         option.value = plan.id;
         option.textContent = plan.name;
+        if (plan.id === storedPlan) {
+            option.selected = true;
+        }
         trainingPlanSelect.appendChild(option);
     });
 
     updatePaces();
     updateCalendar();
 });
-
-// Add event listener for plan changes
-document.getElementById('trainingPlan').addEventListener('change', (e) => {
-    State.plan = PLANS[e.target.value];
-    updatePaces();
-    updateCalendar();
-}); 
