@@ -1,4 +1,5 @@
 import 'temporal-polyfill';
+import { ICalCalendar, ICalCalendarMethod } from 'ical-generator';
 import { PLANS } from './plans';
 
 const State = {
@@ -247,7 +248,6 @@ function updatePaces() {
 
 function updateCalendar() {
     const plan = State.plan;
-    console.log({plan})
 
     const exportButton = document.getElementById('export-plan');
     exportButton.style.display = State.plan ? 'flex' : 'none';
@@ -357,10 +357,56 @@ function updateCalendar() {
     });
 }
 
+function generateCalendarExport() {
+    const plan = State.plan;
+    const raceDateVal = document.getElementById('raceDate').value;
+    if (!plan || !raceDateVal) return;
+
+    const raceDate = Temporal.PlainDate.from(raceDateVal);
+    const startDate = raceDate.subtract({days: 6}).subtract({weeks: plan.weeks.length - 1});
+
+    const cal = new ICalCalendar();
+    cal.name('Training Plan');
+    cal.description(`${plan.name} - Race date: ${raceDate}`);
+    cal.prodId('//njgingrich.github.io//Training Plan//EN');
+    cal.method(ICalCalendarMethod.PUBLISH);
+
+    plan.weeks.forEach((week, weekIndex) => {
+        const weekStartDate = startDate.add({weeks: weekIndex});
+        const weekVolume = week.reduce((acc, workout) => acc + workout.distance, 0);
+
+        const startString = weekStartDate.toZonedDateTime('UTC').toString().replace('+00:00[UTC]', '');
+        const endString = weekStartDate.add({weeks: 1}).toZonedDateTime('UTC').toString().replace('+00:00[UTC]', '');
+
+        const weekEvent = cal.createEvent({
+            start: new Date(startString),
+            end: new Date(endString),
+            description: `Week ${weekIndex + 1} - ${weekVolume} miles`,
+            summary: `${plan.weeks.length - 1 - weekIndex} weeks to goal`,
+        });
+
+        week.forEach((workout, dayIndex) => {
+            const date = weekStartDate.add({days: dayIndex});
+            let description = `${workout.distance}${workout.distanceUnit}`;
+            const summary = `${plan.types[workout.type]} - ${workout.distance}${workout.distanceUnit}`;
+            if (workout.notes) {
+                description += ` - ${workout.notes}`;
+            }
+            const event = cal.createEvent({
+                allDay: true,
+                start: new Date(date.toString()),
+                description: description,
+                summary,
+            });
+        });
+    });
+
+    return cal;
+}
+
 // Add input handlers
 document.getElementById('raceDate').addEventListener('change', e => {
     const date = Temporal.PlainDate.from(e.target.value);
-    console.log(date.toString());
     updateCalendar();
 });
 
@@ -387,7 +433,6 @@ document.getElementById('goalTime').addEventListener('input', e => {
 });
 
 document.getElementById('trainingPlan').addEventListener('change', e => {
-    console.log(e.target.value);
     if (e.target.value == "") {
         State.plan = null;
     } else {
@@ -401,9 +446,28 @@ document.getElementById('trainingPlan').addEventListener('change', e => {
 
 
 // Add event listener for export button
-document.getElementById('export-plan').addEventListener('click', () => {
-    // TODO: Implement export functionality
-    console.log('Export clicked');
+document.getElementById('export-plan').addEventListener('click', (e) => {
+    const plan = State.plan;
+    const raceDate = document.getElementById('raceDate').value;
+    if (!plan || !raceDate) return;
+
+    const cal = generateCalendarExport();
+    const file = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(cal.toString());
+    const filename = `${plan.name}-${raceDate}.ics`;
+
+    const saveBtn = document.createElement('a');
+    saveBtn.rel = 'noopener';
+    saveBtn.href = file;
+    saveBtn.target = '_blank';
+    saveBtn.download = filename;
+    const evt = new MouseEvent('click', {
+      view: window,
+      button: 0,
+      bubbles: true,
+      cancelable: false,    
+    });
+    saveBtn.dispatchEvent(evt);
+    (window.URL || window.webkitURL).revokeObjectURL(saveBtn.href);
 }); 
 
 // Load saved values on page load
