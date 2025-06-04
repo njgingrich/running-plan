@@ -1,16 +1,10 @@
 import 'temporal-polyfill';
 import { ICalCalendar, ICalCalendarMethod } from 'ical-generator';
-import { PLANS } from './plans';
+import { PLANS } from '../plans/index.js';
 
-const State = {
-    plan: null,
-    marathonPace: null,
-    marathonTime: null,
-    longRunPace: null,
-    longRunRange: null,
-    aerobicPace: null,
-    aerobicRange: null,
-}
+import { State as AppState } from './state.js';
+
+const State = new AppState();
 window.State = State;
 
 function durationToSeconds({hours = 0, minutes = 0, seconds = 0}) {
@@ -106,17 +100,6 @@ function marathonTimeToPace(timeDuration) {
 function marathonPaceToTime(paceDuration) {
     const paceSeconds = durationToSeconds(paceDuration);
     return secondsToDuration(paceSeconds * 26.2);
-}
-
-// Save duration to localStorage
-function saveDurationToStorage(key, duration) {
-    localStorage.setItem(key, JSON.stringify(duration));
-}
-
-// Load duration from localStorage
-function loadDurationFromStorage(key) {
-    const stored = localStorage.getItem(key);
-    return stored ? JSON.parse(stored) : null;
 }
 
 function calculatePaces(marathonPaceDuration) {
@@ -406,40 +389,59 @@ function generateCalendarExport() {
 
 // Add input handlers
 document.getElementById('raceDate').addEventListener('change', e => {
+    if (e.target.value === '') {
+        State.raceDate = null;
+        return;
+    }
+
     const date = Temporal.PlainDate.from(e.target.value);
+    State.raceDate = date.toString();
+
     updateCalendar();
 });
 
 document.getElementById('goalPace').addEventListener('input', e => {
     const duration = handleDurationInput(e, false);
-    if (!duration) return;
+    if (!duration) {
+        // Clear state if both inputs are empty
+        if (document.getElementById('goalTime').value === '') {
+            State.goalPaceSeconds = null;
+        }
+        return;
+    };
+
+    State.goalPaceSeconds = durationToSeconds(duration);
     
-    saveDurationToStorage('marathonPace', duration);
     const timeDuration = marathonPaceToTime(duration);
-    saveDurationToStorage('marathonTime', timeDuration);
     document.getElementById('goalTime').value = formatTimeDuration(timeDuration);
     calculatePaces(duration);
 });
 
 document.getElementById('goalTime').addEventListener('input', e => {
     const duration = handleDurationInput(e, true);
-    if (!duration) return;
+    if (!duration) {
+        // Clear state if both inputs are empty
+        if (document.getElementById('goalPace').value === '') {
+            State.goalPaceSeconds = null;
+        }
+        return;
+    };
 
-    saveDurationToStorage('marathonTime', duration);
+
     const paceDuration = marathonTimeToPace(duration);
-    saveDurationToStorage('marathonPace', paceDuration);
+    State.goalPaceSeconds = durationToSeconds(paceDuration);
+
     document.getElementById('goalPace').value = formatPaceDuration(paceDuration);
     calculatePaces(paceDuration);
 });
 
 document.getElementById('trainingPlan').addEventListener('change', e => {
     if (e.target.value == "") {
-        State.plan = null;
+        State.planId = null;
     } else {
-        State.plan = PLANS[e.target.value];
+        State.planId = e.target.value;
     }
 
-    saveDurationToStorage('trainingPlan', e.target.value);
     updatePaces();
     updateCalendar();
 });
@@ -475,15 +477,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const paceInput = document.getElementById('goalPace');
     const timeInput = document.getElementById('goalTime');
     
-    // Try to load from localStorage first
-    const storedPace = loadDurationFromStorage('marathonPace');
-    const storedTime = loadDurationFromStorage('marathonTime');
-    const storedPlan = loadDurationFromStorage('trainingPlan');
-    
-    if (storedPace) {
-        paceInput.value = formatPaceDuration(storedPace);
-        timeInput.value = formatTimeDuration(storedTime);
-        calculatePaces(storedPace);
+    if (State.goalPaceSeconds) {
+        paceInput.value = formatPaceDuration(State.goalPaceSeconds);
+        timeInput.value = formatTimeDuration(marathonPaceToTime(State.goalPaceSeconds));
+        calculatePaces(State.goalPaceSeconds);
     } else if (paceInput.value && /^\d{1,2}:\d{2}$/.test(paceInput.value)) {
         const paceDuration = parseDurationString(paceInput.value);
         calculatePaces(paceDuration);
@@ -492,9 +489,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const paceDuration = marathonTimeToPace(timeDuration);
         calculatePaces(paceDuration);
     }
-
-    if (storedPlan) {
-        State.plan = PLANS[storedPlan];
+        
+    if (State.raceDate) {
+        document.getElementById('raceDate').value = State.raceDate.toString();
     }
 
     // Update select options based on known plans
@@ -508,7 +505,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const option = document.createElement('option');
         option.value = plan.id;
         option.textContent = plan.name;
-        if (plan.id === storedPlan) {
+        if (plan.id === State.planId) {
             option.selected = true;
         }
         trainingPlanSelect.appendChild(option);
