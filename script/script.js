@@ -5,9 +5,9 @@ import { PLANS } from '../plans/index.js';
 import { State as AppState } from './state.js';
 
 const State = new AppState();
-window.State = State;
+const MARATHON_DISTANCE = 26.218;
 
-function durationToSeconds({hours = 0, minutes = 0, seconds = 0}) {
+function durationToSeconds({ hours = 0, minutes = 0, seconds = 0 }) {
     return hours * 3600 + minutes * 60 + seconds;
 }
 
@@ -15,7 +15,7 @@ function secondsToDuration(totalSeconds) {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
     const seconds = Math.ceil(totalSeconds - (hours * 3600) - (minutes * 60));
-    return {hours, minutes, seconds};
+    return { hours, minutes, seconds };
 }
 
 // Parse a duration string in format "HH:MM:SS" or "MM:SS"
@@ -35,35 +35,27 @@ function parseDurationString(str) {
     };
 }
 
-// Format a duration as MM:SS
-function formatPaceDuration({minutes, seconds}) {
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-}
-
-// Format a duration as HH:MM:SS
-function formatTimeDuration(duration) {
-    const formatter = new Intl.DurationFormat('en', {style: 'digital', unitDisplay: 'long'});
+// Format a duration as HH:MM:SS or MM:SS
+function formatDuration(duration) {
+    const formatter = new Intl.DurationFormat('en', { style: 'digital', unitDisplay: 'long', hoursDisplay: 'auto', hours: '2-digit' });
     return formatter.format(duration);
 }
 
-// Calculate percentage adjustment of pace
 function adjustPaceByPercentage(paceDuration, percentageSlower) {
     const paceSeconds = durationToSeconds(paceDuration);
     const adjustedSeconds = paceSeconds * (1 + percentageSlower / 100);
     return secondsToDuration(adjustedSeconds);
 }
 
-// Calculate time-based adjustment of pace
 function adjustPaceByTime(paceDuration, secondsAdjustment) {
     const paceSeconds = durationToSeconds(paceDuration);
     const adjustedSeconds = paceSeconds + secondsAdjustment;
     return secondsToDuration(adjustedSeconds);
 }
 
-// Get adjusted paces for a range, returns [slowPace, averagePace, fastPace]
 function getAdjustedPaces(basePaceDuration, adjustmentType, fastAdjustment, slowAdjustment) {
     let fastPace, slowPace;
-    
+
     if (adjustmentType === 'pct') {
         slowPace = adjustPaceByPercentage(basePaceDuration, slowAdjustment);
         fastPace = adjustPaceByPercentage(basePaceDuration, fastAdjustment);
@@ -71,35 +63,32 @@ function getAdjustedPaces(basePaceDuration, adjustmentType, fastAdjustment, slow
         slowPace = adjustPaceByTime(basePaceDuration, slowAdjustment);
         fastPace = adjustPaceByTime(basePaceDuration, fastAdjustment);
     }
-    
+
     // Calculate average pace
     const slowSeconds = durationToSeconds(slowPace);
     const fastSeconds = durationToSeconds(fastPace);
     const averageSeconds = (slowSeconds + fastSeconds) / 2;
-    
+
     return [slowPace, secondsToDuration(averageSeconds), fastPace];
 }
 
-// Estimate 10k race pace from marathon pace
 function estimate10kPace(marathonPaceDuration) {
     const paceSeconds = durationToSeconds(marathonPaceDuration);
     return secondsToDuration(paceSeconds / 1.06);
 }
 
-// Format pace range as string (faster to slower)
 function formatPaceRange(fastPace, slowPace) {
-    return `${formatPaceDuration(fastPace)} - ${formatPaceDuration(slowPace)} /mile`;
+    return `${formatDuration(fastPace)} - ${formatDuration(slowPace)} /mile`;
 }
 
-// Convert between marathon time and pace
 function marathonTimeToPace(timeDuration) {
     const timeSeconds = durationToSeconds(timeDuration);
-    return secondsToDuration(timeSeconds / 26.2);
+    return secondsToDuration(timeSeconds / MARATHON_DISTANCE);
 }
 
 function marathonPaceToTime(paceDuration) {
     const paceSeconds = durationToSeconds(paceDuration);
-    return secondsToDuration(paceSeconds * 26.2);
+    return secondsToDuration(paceSeconds * MARATHON_DISTANCE);
 }
 
 function calculatePaces(marathonPaceDuration) {
@@ -124,7 +113,7 @@ function calculatePaces(marathonPaceDuration) {
 
         if (config.paceType === 'race') {
             // Race pace is just the marathon pace
-            paceElement.textContent = `${formatPaceDuration(marathonPaceDuration)} /mile`;
+            paceElement.textContent = `${formatDuration(marathonPaceDuration)} /mile`;
             rangeElement.textContent = 'Target Race Pace';
         } else {
             // Calculate adjusted paces based on configuration
@@ -135,41 +124,18 @@ function calculatePaces(marathonPaceDuration) {
                 config.slow
             );
 
-            paceElement.textContent = `${formatPaceDuration(middlePace)} /mile`;
+            paceElement.textContent = `${formatDuration(middlePace)} /mile`;
             rangeElement.textContent = formatPaceRange(fastPace, slowPace);
         }
     });
 }
 
 // Handle duration input formatting and return parsed duration
-function handleDurationInput(e, isTimeInput) {
-    let value = e.target.value.replace(/[^\d:]/g, '');
-    const maxLength = isTimeInput ? 8 : 5;
-    
-    if (value.length > maxLength) {
-        value = value.slice(0, maxLength);
-    }
-    
-    // Auto-add colons
-    if (isTimeInput) {
-        if (value.length >= 2 && value.split(':').length < 2) {
-            value = value.slice(0, 2) + ':' + value.slice(2);
-        }
-        if (value.length >= 5 && value.split(':').length < 3) {
-            value = value.slice(0, 5) + ':' + value.slice(5);
-        }
-    } else {
-        if (value.length >= 2 && !value.includes(':')) {
-            value = value.slice(0, 2) + ':' + value.slice(2);
-        }
-    }
-    
-    e.target.value = value;
-
+function getDurationFromInput(e) {
     // Parse and return duration if valid
-    const pattern = isTimeInput ? /^\d{1,2}:\d{2}:\d{2}$/ : /^\d{1,2}:\d{2}$/;
-    if (pattern.test(value)) {
-        return parseDurationString(value);
+    const pattern = /^(\d{1,2}):([0-5]\d)(:[0-5]\d)?$/;
+    if (pattern.test(e.target.value)) {
+        return parseDurationString(e.target.value);
     }
     return null;
 }
@@ -177,7 +143,7 @@ function handleDurationInput(e, isTimeInput) {
 function updatePaces() {
     const plan = State.plan;
     if (!plan) return;
-    
+
     // Generate pace cards based on plan configuration
     const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = '';
@@ -248,8 +214,8 @@ function updateCalendar() {
 
     const raceDate = Temporal.PlainDate.from(startDate);
     const numWeeksInPlan = plan.weeks.length;
-    const trainingStartDate = raceDate.subtract({days: 6}).subtract({weeks: numWeeksInPlan - 1});
-    
+    const trainingStartDate = raceDate.subtract({ days: 6 }).subtract({ weeks: numWeeksInPlan - 1 });
+
     const calendarBody = document.getElementById('calendar-body');
     calendarBody.innerHTML = '';
 
@@ -261,7 +227,7 @@ function updateCalendar() {
     }
 
     plan.weeks.forEach((week, weekIndex) => {
-        const weekStartDate = trainingStartDate.add({weeks: weekIndex});
+        const weekStartDate = trainingStartDate.add({ weeks: weekIndex });
         const totalMiles = week.reduce((acc, day) => acc + day.distance, 0);
 
         // Create row for dates
@@ -294,7 +260,7 @@ function updateCalendar() {
 
         week.forEach((_, dayIndex) => {
             const dateCell = document.createElement('td');
-            const date = weekStartDate.add({days: dayIndex});
+            const date = weekStartDate.add({ days: dayIndex });
             dateCell.textContent = date.toLocaleString('en-US', {
                 month: 'long',
                 day: 'numeric'
@@ -346,7 +312,7 @@ function generateCalendarExport() {
     if (!plan || !raceDateVal) return;
 
     const raceDate = Temporal.PlainDate.from(raceDateVal);
-    const startDate = raceDate.subtract({days: 6}).subtract({weeks: plan.weeks.length - 1});
+    const startDate = raceDate.subtract({ days: 6 }).subtract({ weeks: plan.weeks.length - 1 });
 
     const cal = new ICalCalendar();
     cal.name('Training Plan');
@@ -355,23 +321,27 @@ function generateCalendarExport() {
     cal.method(ICalCalendarMethod.PUBLISH);
 
     plan.weeks.forEach((week, weekIndex) => {
-        const weekStartDate = startDate.add({weeks: weekIndex});
+        const weekStartDate = startDate.add({ weeks: weekIndex });
         const weekVolume = week.reduce((acc, workout) => acc + workout.distance, 0);
 
         const startString = weekStartDate.toZonedDateTime('UTC').toString().replace('+00:00[UTC]', '');
-        const endString = weekStartDate.add({weeks: 1}).toZonedDateTime('UTC').toString().replace('+00:00[UTC]', '');
+        const endString = weekStartDate.add({ weeks: 1 }).toZonedDateTime('UTC').toString().replace('+00:00[UTC]', '');
 
         const weekEvent = cal.createEvent({
             start: new Date(startString),
             end: new Date(endString),
             description: `Week ${weekIndex + 1} - ${weekVolume} miles`,
-            summary: `${plan.weeks.length - 1 - weekIndex} weeks to goal`,
+            summary: `${plan.weeks.length - 1 - weekIndex} weeks to goal (${weekVolume} miles)`,
         });
 
         week.forEach((workout, dayIndex) => {
-            const date = weekStartDate.add({days: dayIndex});
+            const date = weekStartDate.add({ days: dayIndex });
             let description = `${workout.distance}${workout.distanceUnit}`;
-            const summary = `${plan.types[workout.type]} - ${workout.distance}${workout.distanceUnit}`;
+
+            let summary = `${plan.types[workout.type]}`;
+            if (workout.distance && workout.distance > 0) {
+                summary = `${plan.types[workout.type]} - ${workout.distance}${workout.distanceUnit}`;
+            }
             if (workout.notes) {
                 description += ` - ${workout.notes}`;
             }
@@ -387,6 +357,30 @@ function generateCalendarExport() {
     return cal;
 }
 
+function updateGoalInputs({ raceDuration, paceDuration }) {
+    const paceInput = document.getElementById('goalPace');
+    const timeInput = document.getElementById('goalTime');
+
+    // Clear inputs if no valid duration provided
+    if (!raceDuration && !paceDuration) {
+        State.goalPaceSeconds = null;
+        paceInput.value = '';
+        timeInput.value = '';
+        return;
+    }
+
+    // Calculate pace and race time based on whichever input was provided
+    const calculatedPace = raceDuration ? marathonTimeToPace(raceDuration) : paceDuration;
+    const calculatedRaceTime = paceDuration ? marathonPaceToTime(paceDuration) : raceDuration;
+
+    // Update state and form inputs
+    State.goalPaceSeconds = durationToSeconds(calculatedPace);
+    paceInput.value = formatDuration(calculatedPace);
+    timeInput.value = formatDuration(calculatedRaceTime);
+
+    calculatePaces(calculatedPace);
+}
+
 // Add input handlers
 document.getElementById('raceDate').addEventListener('change', e => {
     if (e.target.value === '') {
@@ -400,39 +394,12 @@ document.getElementById('raceDate').addEventListener('change', e => {
     updateCalendar();
 });
 
-document.getElementById('goalPace').addEventListener('input', e => {
-    const duration = handleDurationInput(e, false);
-    if (!duration) {
-        // Clear state if both inputs are empty
-        if (document.getElementById('goalTime').value === '') {
-            State.goalPaceSeconds = null;
-        }
-        return;
-    };
-
-    State.goalPaceSeconds = durationToSeconds(duration);
-    
-    const timeDuration = marathonPaceToTime(duration);
-    document.getElementById('goalTime').value = formatTimeDuration(timeDuration);
-    calculatePaces(duration);
+document.getElementById('goalPace').addEventListener('change', e => {
+    updateGoalInputs({paceDuration: getDurationFromInput(e)});
 });
 
-document.getElementById('goalTime').addEventListener('input', e => {
-    const duration = handleDurationInput(e, true);
-    if (!duration) {
-        // Clear state if both inputs are empty
-        if (document.getElementById('goalPace').value === '') {
-            State.goalPaceSeconds = null;
-        }
-        return;
-    };
-
-
-    const paceDuration = marathonTimeToPace(duration);
-    State.goalPaceSeconds = durationToSeconds(paceDuration);
-
-    document.getElementById('goalPace').value = formatPaceDuration(paceDuration);
-    calculatePaces(paceDuration);
+document.getElementById('goalTime').addEventListener('change', e => {
+    updateGoalInputs({raceDuration: getDurationFromInput(e)});
 });
 
 document.getElementById('trainingPlan').addEventListener('change', e => {
@@ -463,23 +430,23 @@ document.getElementById('export-plan').addEventListener('click', (e) => {
     saveBtn.target = '_blank';
     saveBtn.download = filename;
     const evt = new MouseEvent('click', {
-      view: window,
-      button: 0,
-      bubbles: true,
-      cancelable: false,    
+        view: window,
+        button: 0,
+        bubbles: true,
+        cancelable: false,
     });
     saveBtn.dispatchEvent(evt);
     (window.URL || window.webkitURL).revokeObjectURL(saveBtn.href);
-}); 
+});
 
 // Load saved values on page load
 document.addEventListener('DOMContentLoaded', async () => {
     const paceInput = document.getElementById('goalPace');
     const timeInput = document.getElementById('goalTime');
-    
+
     if (State.goalPaceSeconds) {
-        paceInput.value = formatPaceDuration(State.goalPaceSeconds);
-        timeInput.value = formatTimeDuration(marathonPaceToTime(State.goalPaceSeconds));
+        paceInput.value = formatDuration(State.goalPaceSeconds);
+        timeInput.value = formatDuration(marathonPaceToTime(State.goalPaceSeconds));
         calculatePaces(State.goalPaceSeconds);
     } else if (paceInput.value && /^\d{1,2}:\d{2}$/.test(paceInput.value)) {
         const paceDuration = parseDurationString(paceInput.value);
@@ -489,7 +456,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const paceDuration = marathonTimeToPace(timeDuration);
         calculatePaces(paceDuration);
     }
-        
+
     if (State.raceDate) {
         document.getElementById('raceDate').value = State.raceDate.toString();
     }
