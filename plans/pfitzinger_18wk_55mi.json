@@ -32,13 +32,13 @@
             "multiplier": 0.9434
         },
         "long_run": {
-            "description": "10-20% slower than your marathon pace",
+            "description": "10-20% slower than marathon pace",
             "paceType": "pct",
             "fast": 10,
             "slow": 20
         },
         "recovery": {
-            "description": "Easy - 15-25% slower than your marathon pace",
+            "description": "15-25% slower than marathon pace",
             "paceType": "pct",
             "fast": 15,
             "slow": 25

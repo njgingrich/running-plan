@@ -70,6 +70,7 @@ function getUrlState() {
  * @param {string|null} goalPaceSeconds - The goal pace in seconds to set
  */
 function updateUrlState({plan = undefined, raceDate = undefined, goalPaceSeconds = undefined} = {}) {
+    console.log('Updating URL state', {plan, raceDate, goalPaceSeconds});
     const params = new URLSearchParams(window.location.search);
 
     if (plan) {

@@ -78,7 +78,7 @@ function estimate10kPace(marathonPaceDuration) {
 }
 
 function formatPaceRange(fastPace, slowPace) {
-    return `${formatDuration(fastPace)} - ${formatDuration(slowPace)} /mile`;
+    return `${formatDuration(fastPace)} - ${formatDuration(slowPace)}`;
 }
 
 function marathonTimeToPace(timeDuration) {
@@ -91,43 +91,36 @@ function marathonPaceToTime(paceDuration) {
     return secondsToDuration(paceSeconds * MARATHON_DISTANCE);
 }
 
-function calculatePaces(marathonPaceDuration) {
-    const plan = State.plan;
-    if (!plan || !plan.paces) return;
+function calculatePaceDetails(config) {
+    let paceDuration = secondsToDuration(State.goalPaceSeconds);
+    if (config.multiplier) {
+        // If there's a multiplier, apply it to the base pace
+        const baseSeconds = durationToSeconds(paceDuration);
+        paceDuration = secondsToDuration(baseSeconds * config.multiplier);
+    }
 
-    // Calculate base paces
-    const estimated10kPaceDuration = estimate10kPace(marathonPaceDuration);
-
-    // Process each pace type from the plan
-    Object.entries(plan.paces).forEach(([type, config]) => {
-        const paceElement = document.getElementById(`${type}Pace`);
-        const rangeElement = document.getElementById(`${type}Range`);
-        if (!paceElement || !rangeElement) return;
-
-        let basePace = marathonPaceDuration;
-        if (config.multiplier) {
-            // If there's a multiplier, apply it to the base pace
-            const baseSeconds = durationToSeconds(basePace);
-            basePace = secondsToDuration(baseSeconds * config.multiplier);
+    if (config.paceType === 'race') {
+        // Race pace is just the marathon pace
+        return {
+            pace: `${formatDuration(paceDuration)}/mi`,
+            range: 'Race Pace',
+            description: config.description || '',
         }
+    } else {
+        // Calculate adjusted paces based on configuration
+        const [slowPace, middlePace, fastPace] = getAdjustedPaces(
+            paceDuration,
+            config.paceType,
+            config.fast,
+            config.slow
+        );
 
-        if (config.paceType === 'race') {
-            // Race pace is just the marathon pace
-            paceElement.textContent = `${formatDuration(marathonPaceDuration)} /mile`;
-            rangeElement.textContent = 'Target Race Pace';
-        } else {
-            // Calculate adjusted paces based on configuration
-            const [slowPace, middlePace, fastPace] = getAdjustedPaces(
-                basePace,
-                config.paceType,
-                config.fast,
-                config.slow
-            );
-
-            paceElement.textContent = `${formatDuration(middlePace)} /mile`;
-            rangeElement.textContent = formatPaceRange(fastPace, slowPace);
+        return {
+            pace: `${formatDuration(middlePace)}/mi`,
+            range: formatPaceRange(fastPace, slowPace),
+            description: config.description || '',
         }
-    });
+    }
 }
 
 // Handle duration input formatting and return parsed duration
@@ -140,60 +133,121 @@ function getDurationFromInput(e) {
     return null;
 }
 
+function generatePaceCard(title, config) {
+    if (!State.goalPaceSeconds) {
+        const card = document.createElement('div');
+        card.className = 'pace-card';
+        card.innerHTML = `
+            <h3>${title}</h3>
+            <div class="pace-info">
+                <p class="pace">--:-- /mile</p>
+                <p class="pace-range">--:-- - --:-- / mile</p>
+            </div>
+            <p class="description"></p>
+        `;
+        return card;
+    }
+
+    const {pace, range, description} = calculatePaceDetails(config);
+
+    const template = `
+        <h3>${title}</h3>
+        <div class="pace-info">
+            <p class="pace">${pace}</p>
+            <p class="pace-range">${range}</p>
+        </div>
+        <p class="description">${description}</p>
+    `;
+
+    const card = document.createElement('div');
+    card.className = 'pace-card';
+    card.innerHTML = template;
+    return card;
+}
+
 function updatePaces() {
     const plan = State.plan;
     if (!plan) return;
 
     // Generate pace cards based on plan configuration
-    const resultsContainer = document.getElementById('results');
+    const resultsContainer = document.getElementById('pace-cards');
     resultsContainer.innerHTML = '';
 
     Object.entries(plan.paces).forEach(([type, config]) => {
-        const card = document.createElement('div');
-        card.className = 'pace-card';
-
-        const title = document.createElement('h3');
-        title.textContent = plan.types[type] || type;
-        card.appendChild(title);
-
-        const paceInfo = document.createElement('div');
-        paceInfo.className = 'pace-info';
-
-        const paceMain = document.createElement('div');
-        paceMain.className = 'pace-main';
-        const pace = document.createElement('p');
-        pace.className = 'pace';
-        pace.id = `${type}Pace`;
-        pace.textContent = '--:-- /mile';
-        paceMain.appendChild(pace);
-        paceInfo.appendChild(paceMain);
-
-        const paceRangeContainer = document.createElement('div');
-        paceRangeContainer.className = 'pace-range-container';
-        const paceRange = document.createElement('p');
-        paceRange.className = 'pace-range';
-        paceRange.id = `${type}Range`;
-        paceRange.textContent = '--:-- - --:-- /mile';
-        paceRangeContainer.appendChild(paceRange);
-        paceInfo.appendChild(paceRangeContainer);
-
-        card.appendChild(paceInfo);
-
-        const description = document.createElement('p');
-        description.className = 'description';
-        description.textContent = config.description || '';
-        card.appendChild(description);
-
-        resultsContainer.appendChild(card);
+        const title = plan.types[type] || type;
+        resultsContainer.appendChild(generatePaceCard(title, config));
     });
-
-    // Recalculate paces if we have a marathon pace
-    const paceInput = document.getElementById('goalPace');
-    if (paceInput.value && /^\d{1,2}:\d{2}$/.test(paceInput.value)) {
-        const paceDuration = parseDurationString(paceInput.value);
-        calculatePaces(paceDuration);
-    }
 }
+
+function generateCalendarCell(day, config) {
+    const workoutContainer = document.createElement('td');
+    const workout = document.createElement('div');
+    workout.className = 'workout';
+
+    const type = document.createElement('div');
+    type.className = 'workout-type';
+    type.textContent = config.types[day.type];
+    workout.appendChild(type);
+
+    if (day.distance && day.distance > 0) {
+        const distance = document.createElement('div');
+        distance.className = 'workout-distance';
+        distance.textContent = `${day.distance}${day.distanceUnit}`;
+        workout.appendChild(distance);
+    }
+
+    if (day.notes) {
+        const notes = document.createElement('div');
+        notes.className = 'workout-notes';
+        notes.textContent = day.notes;
+        workout.appendChild(notes);
+    }
+
+    workoutContainer.appendChild(workout);
+    return workoutContainer;
+}
+
+function generateDateCell(weekStartDate, dayIndex) {
+    const dateCell = document.createElement('td');
+    const date = weekStartDate.add({ days: dayIndex });
+    dateCell.textContent = date.toLocaleString('en-US', {
+        month: 'long',
+        day: 'numeric'
+    });
+    dateCell.className = 'date-cell';
+
+    return dateCell;
+}
+
+function generateWeekCell(weekIndex, numWeeksInPlan, totalMiles) {
+    const weekCell = document.createElement('td');
+    const weekCellContainer = document.createElement('div');
+    weekCell.className = 'week-number';
+    weekCell.setAttribute('rowspan', '2');
+    weekCellContainer.className = 'week-cell-container';
+
+    // Create week number span
+    const weekNumberSpan = document.createElement('span');
+    weekNumberSpan.textContent = `Week ${weekIndex + 1}`;
+    weekNumberSpan.className = 'week-number-title';
+    weekCellContainer.appendChild(weekNumberSpan);
+
+    // Create weeks to goal span
+    const weeksToGoalSpan = document.createElement('span');
+    weeksToGoalSpan.textContent = `(${numWeeksInPlan - 1 - weekIndex} to goal)`;
+    weekCellContainer.appendChild(weeksToGoalSpan);
+
+    // Create total miles span
+    const totalMilesSpan = document.createElement('span');
+    totalMilesSpan.className = 'total-volume';
+    totalMilesSpan.textContent = `${totalMiles} miles`;
+    weekCellContainer.appendChild(totalMilesSpan);
+
+    weekCell.appendChild(weekCellContainer);
+
+    return weekCell;
+}
+
 
 function updateCalendar() {
     const plan = State.plan;
@@ -232,74 +286,12 @@ function updateCalendar() {
 
         // Create row for dates
         const dateRow = document.createElement('tr');
-        // Add week number (rowspan=2)
-        const weekCell = document.createElement('td');
-        const weekCellContainer = document.createElement('div');
-        weekCell.className = 'week-number';
-        weekCell.setAttribute('rowspan', '2');
-        weekCellContainer.className = 'week-cell-container';
-
-        // Create week number span
-        const weekNumberSpan = document.createElement('span');
-        weekNumberSpan.textContent = `Week ${weekIndex + 1}`;
-        weekCellContainer.appendChild(weekNumberSpan);
-
-        // Create weeks to goal span
-        const weeksToGoalSpan = document.createElement('span');
-        weeksToGoalSpan.textContent = `(${numWeeksInPlan - 1 - weekIndex} to goal)`;
-        weekCellContainer.appendChild(weeksToGoalSpan);
-
-        // Create total miles span
-        const totalMilesSpan = document.createElement('span');
-        totalMilesSpan.className = 'total-volume';
-        totalMilesSpan.textContent = `${totalMiles} miles`;
-        weekCellContainer.appendChild(totalMilesSpan);
-
-        weekCell.appendChild(weekCellContainer);
-        dateRow.appendChild(weekCell);
-
-        week.forEach((_, dayIndex) => {
-            const dateCell = document.createElement('td');
-            const date = weekStartDate.add({ days: dayIndex });
-            dateCell.textContent = date.toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric'
-            });
-            dateCell.className = 'date-cell';
-            dateRow.appendChild(dateCell);
-        });
+        dateRow.appendChild(generateWeekCell(weekIndex, numWeeksInPlan, totalMiles));
+        week.forEach((_, dayIndex) => dateRow.appendChild(generateDateCell(weekStartDate, dayIndex)));
 
         // Create row for workouts
         const row = document.createElement('tr');
-
-        // Add each day's workout
-        week.forEach((day, dayIndex) => {
-            const cell = document.createElement('td');
-            const workout = document.createElement('div');
-            workout.className = 'workout';
-
-            const type = document.createElement('div');
-            type.className = 'workout-type';
-            type.textContent = plan.types[day.type];
-            workout.appendChild(type);
-
-            if (day.distance && day.distance > 0) {
-                const distance = document.createElement('div');
-                distance.className = 'workout-distance';
-                distance.textContent = `${day.distance}${day.distanceUnit}`;
-                workout.appendChild(distance);
-            }
-
-            if (day.notes) {
-                const notes = document.createElement('div');
-                notes.className = 'workout-notes';
-                notes.textContent = day.notes;
-                workout.appendChild(notes);
-            }
-
-            cell.appendChild(workout);
-            row.appendChild(cell);
-        });
+        week.forEach((day) => row.appendChild(generateCalendarCell(day, plan)));
 
         calendarBody.appendChild(dateRow);
         calendarBody.appendChild(row);
@@ -378,7 +370,7 @@ function updateGoalInputs({ raceDuration, paceDuration }) {
     paceInput.value = formatDuration(calculatedPace);
     timeInput.value = formatDuration(calculatedRaceTime);
 
-    calculatePaces(calculatedPace);
+    updatePaces();
 }
 
 // Add input handlers
@@ -411,6 +403,11 @@ document.getElementById('trainingPlan').addEventListener('change', e => {
 
     updatePaces();
     updateCalendar();
+});
+
+document.getElementById('toggle-sidebar').addEventListener('click', e => {
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('expanded');
 });
 
 
@@ -447,14 +444,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (State.goalPaceSeconds) {
         paceInput.value = formatDuration(State.goalPaceSeconds);
         timeInput.value = formatDuration(marathonPaceToTime(State.goalPaceSeconds));
-        calculatePaces(State.goalPaceSeconds);
     } else if (paceInput.value && /^\d{1,2}:\d{2}$/.test(paceInput.value)) {
         const paceDuration = parseDurationString(paceInput.value);
-        calculatePaces(paceDuration);
+        updateGoalInputs({paceDuration});
     } else if (timeInput.value && /^\d{1,2}:\d{2}:\d{2}$/.test(timeInput.value)) {
-        const timeDuration = parseDurationString(timeInput.value);
-        const paceDuration = marathonTimeToPace(timeDuration);
-        calculatePaces(paceDuration);
+        const raceDuration = parseDurationString(timeInput.value);
+        updateGoalInputs({raceDuration});
     }
 
     if (State.raceDate) {
