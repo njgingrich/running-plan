@@ -405,12 +405,6 @@ document.getElementById('trainingPlan').addEventListener('change', e => {
     updateCalendar();
 });
 
-document.getElementById('toggle-sidebar').addEventListener('click', e => {
-    const sidebar = document.querySelector('.sidebar');
-    sidebar.classList.toggle('expanded');
-});
-
-
 // Add event listener for export button
 document.getElementById('export-plan').addEventListener('click', (e) => {
     const plan = State.plan;

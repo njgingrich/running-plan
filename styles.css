@@ -302,23 +302,16 @@
 
     --t-shadow-color: 0.6503 0.01 106.68;
     --t-shadow-low:
-        0.1px 0.6px 0.8px oklch(var(--t-shadow-color) / 0.19),
-        0.1px 0.9px 1.1px -0.8px oklch(var(--t-shadow-color) / 0.26),
-        0.3px 2.1px 2.7px -1.6px oklch(var(--t-shadow-color) / 0.33);
+        0px 0.5px 0.7px oklch(var(--t-shadow-color) / 0.05),
+        0px 1.6px 2.3px -0.4px oklch(var(--t-shadow-color) / 0.32);
     --t-shadow-medium:
-        0.1px 0.6px 0.8px oklch(var(--t-shadow-color) / 0.2),
-        0.3px 2px 2.5px -0.5px oklch(var(--t-shadow-color) / 0.26),
-        0.7px 4.6px 5.9px -1.1px oklch(var(--t-shadow-color) / 0.31),
-        1.5px 10.3px 13.1px -1.6px oklch(var(--t-shadow-color) / 0.37);
+        0px 0.5px 0.7px oklch(var(--t-shadow-color) / 0.07),
+        0.1px 8.1px 11.7px -0.4px oklch(var(--t-shadow-color) / 0.45);
     --t-shadow-high:
-        0.1px 0.6px 0.8px oklch(var(--t-shadow-color) / 0.19),
-        0.5px 3.7px 4.7px -0.2px oklch(var(--t-shadow-color) / 0.21),
-        0.9px 6.6px 8.4px -0.5px oklch(var(--t-shadow-color) / 0.24),
-        1.5px 10.2px 13px -0.7px oklch(var(--t-shadow-color) / 0.26),
-        2.2px 15.4px 19.6px -0.9px oklch(var(--t-shadow-color) / 0.29),
-        3.3px 22.8px 29px -1.1px oklch(var(--t-shadow-color) / 0.32),
-        4.8px 33.5px 42.6px -1.4px oklch(var(--t-shadow-color) / 0.34),
-        6.9px 48.1px 61.2px -1.6px oklch(var(--t-shadow-color) / 0.37);
+        0px 0.5px 0.7px oklch(var(--t-shadow-color) / 0.07),
+        0px 6.4px 9.2px -0.1px oklch(var(--t-shadow-color) / 0.24),
+        0.1px 14.5px 20.9px -0.3px oklch(var(--t-shadow-color) / 0.42),
+        0.2px 31.6px 45.5px -0.4px oklch(var(--t-shadow-color) / 0.6);
 }
 
 * {
@@ -347,37 +340,48 @@ body {
 }
 
 .content {
+    --max-content-width: 1200px;
     display: grid;
-    grid-template-columns: auto 68px;
+    grid-template-columns: 100%;
     grid-gap: var(--space-300);
     transition: 300ms;
 
     padding: var(--space-600);
-    max-width: 1200px;
     margin: 0 auto;
-}
-.content:has(.sidebar.expanded) {
-    grid-template-columns: auto 300px;
 }
 .content > .footer {
     grid-column: 1 / -1;
 }
+.content > .sidebar {
+    grid-row: 1;
+    grid-column: 1;
+    position: initial;
+    /* width: calc(100% - var(--space-200) * 2); */
+    justify-self: stretch;
+}
+
+@media (min-width: 896px) {
+    .content {
+        grid-template-columns: minmax(0, var(--max-content-width)) minmax(auto, 280px);
+    }
+    .content .sidebar {
+        grid-row: 1;
+        grid-column: 2;
+        position: sticky;
+    }
+}
 
 .header {
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto;
-    grid-template-areas:
-        "title icon"
-        "subtitle subtitle";
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-200);
 }
 .header.subtitle {
-    grid-area: subtitle;
+    flex: 1;
 }
 
 .sidebar {
     place-self: start;
-    position: sticky;
     top: var(--space-600);
 }
 
@@ -386,13 +390,14 @@ body {
     & .header > .subtitle {
         display: none;
     }
-    & .config {
+    /* & .config {
         display: none;
-    }
+    } */
 }
 
 .page-container {
     --flow-space: var(--space-500);
+    max-width: 1200px;
 }
 
 .footer {
@@ -420,7 +425,7 @@ body {
     margin-bottom: var(--space-200);
     margin-left: var(--space-200);
     border-radius: var(--radius-700);
-    box-shadow: var(--t-shadow-medium);
+    box-shadow: var(--t-shadow-low);
 
     & :is(h2) {
         font-size: var(--font-size-500);
@@ -519,7 +524,7 @@ input:focus, select:focus {
 .plan-title {
     flex: 1;
 }
-.export-button {
+.button {
     display: flex;
     align-items: center;
     gap: var(--space-200);
@@ -534,22 +539,27 @@ input:focus, select:focus {
     transition: background-color 0.2s;
 }
 
-.export-button:hover {
+.button:hover {
     background: var(--t-button-primary-background-hover);
 }
 
-.export-button svg {
+.button svg {
     fill: currentColor;
-} 
+}
+.icon-button {
+    justify-self: start;
+}
 
-.calendar {
+.training-table-container {
     border-radius: var(--radius-500);
     overflow-x: auto;
+    width: 100%;
+    min-width: 0;
 }
 .training-table {
     width: 100%;
+    min-width: max-content;
     border-collapse: collapse;
-    overflow-x: scroll;
 }
 .training-table thead {
     background-color: var(--t-table-background-header);
@@ -596,6 +606,7 @@ input:focus, select:focus {
     color: var(--t-text-subtext);
 }
 .training-table .workout {
+    width: 150px;
     padding: var(--space-100) var(--space-200);
     display: flex;
     flex-direction: column;
@@ -617,6 +628,9 @@ input:focus, select:focus {
     font-style: italic;
 }
 
+.hidden {
+    display: none;
+}
 .flow > * + * {
     margin-block-start: var(--flow-space, var(--space-400));
 }
