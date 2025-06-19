@@ -12,6 +12,10 @@ export function secondsToDuration(totalSeconds) {
 // Parse a duration string in format "HH:MM:SS" or "MM:SS"
 export function parseDurationString(str) {
     const parts = str.split(':').map(num => parseInt(num, 10));
+    if (parts.some(isNaN) || parts.length < 2 || parts.length > 3) {
+        return { hours: 0, minutes: 0, seconds: 0 };
+    }
+
     if (parts.length === 3) {
         return {
             hours: parts[0],
