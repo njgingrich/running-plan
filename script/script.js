@@ -1,9 +1,9 @@
 import "temporal-polyfill";
-import { ICalCalendar, ICalCalendarMethod } from "ical-generator";
 import { PLANS } from "../plans/index.js";
 
 import { State as AppState } from "./state.js";
-import { generatePaceCard, generateCalendarWeekRows } from "./util/dom.js";
+import { generateCalendarExport } from "./util/calendar.js";
+import { generatePaceCard, generateCalendarWeekRows, generatePlanSelectOptions, createDownloadElement } from "./util/dom.js";
 import {
   durationToSeconds,
   parseDurationString,
@@ -79,61 +79,6 @@ function updateCalendar() {
   });
 }
 
-function generateCalendarExport() {
-  const plan = State.plan;
-  const raceDateVal = document.getElementById("raceDate").value;
-  if (!plan || !raceDateVal) return;
-
-  const raceDate = Temporal.PlainDate.from(raceDateVal);
-  const startDate = raceDate.subtract({ days: 6 }).subtract({ weeks: plan.weeks.length - 1 });
-
-  const cal = new ICalCalendar();
-  cal.name("Training Plan");
-  cal.description(`${plan.name} - Race date: ${raceDate}`);
-  cal.prodId("//njgingrich.github.io//Training Plan//EN");
-  cal.method(ICalCalendarMethod.PUBLISH);
-
-  plan.weeks.forEach((week, weekIndex) => {
-    const weekStartDate = startDate.add({ weeks: weekIndex });
-    const weekVolume = week.reduce((acc, workout) => acc + workout.distance, 0);
-
-    const startString = weekStartDate.toZonedDateTime("UTC").toString().replace("+00:00[UTC]", "");
-    const endString = weekStartDate
-      .add({ weeks: 1 })
-      .toZonedDateTime("UTC")
-      .toString()
-      .replace("+00:00[UTC]", "");
-
-    const weekEvent = cal.createEvent({
-      start: new Date(startString),
-      end: new Date(endString),
-      description: `Week ${weekIndex + 1} - ${weekVolume} miles`,
-      summary: `${plan.weeks.length - 1 - weekIndex} weeks to goal (${weekVolume} miles)`,
-    });
-
-    week.forEach((workout, dayIndex) => {
-      const date = weekStartDate.add({ days: dayIndex });
-      let description = `${workout.distance}${workout.distanceUnit}`;
-
-      let summary = `${plan.types[workout.type]}`;
-      if (workout.distance && workout.distance > 0) {
-        summary = `${plan.types[workout.type]} - ${workout.distance}${workout.distanceUnit}`;
-      }
-      if (workout.notes) {
-        description += ` - ${workout.notes}`;
-      }
-      const event = cal.createEvent({
-        allDay: true,
-        start: new Date(date.toString()),
-        description: description,
-        summary,
-      });
-    });
-  });
-
-  return cal;
-}
-
 function updateGoalInputs({ raceDuration, paceDuration }) {
   const paceInput = document.getElementById("goalPace");
   const timeInput = document.getElementById("goalTime");
@@ -193,27 +138,11 @@ document.getElementById("trainingPlan").addEventListener("change", (e) => {
 
 // Add event listener for export button
 document.getElementById("export-plan").addEventListener("click", (e) => {
-  const plan = State.plan;
   const raceDate = document.getElementById("raceDate").value;
-  if (!plan || !raceDate) return;
+  if (!State.plan || !raceDate) return;
 
-  const cal = generateCalendarExport();
-  const file = "data:text/calendar;charset=utf-8," + encodeURIComponent(cal.toString());
-  const filename = `${plan.name}-${raceDate}.ics`;
-
-  const saveBtn = document.createElement("a");
-  saveBtn.rel = "noopener";
-  saveBtn.href = file;
-  saveBtn.target = "_blank";
-  saveBtn.download = filename;
-  const evt = new MouseEvent("click", {
-    view: window,
-    button: 0,
-    bubbles: true,
-    cancelable: false,
-  });
-  saveBtn.dispatchEvent(evt);
-  (window.URL || window.webkitURL).revokeObjectURL(saveBtn.href);
+  const calData = generateCalendarExport(State.plan);
+  createDownloadElement(calData.toString(), `${State.plan.name}-${raceDate}.ics`);
 });
 
 // Load saved values on page load
@@ -236,20 +165,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("raceDate").value = State.raceDate.toString();
   }
 
-  // Update select options based on known plans
   const trainingPlanSelect = document.getElementById("trainingPlan");
-  const option = document.createElement("option");
-  option.value = "";
-  option.textContent = "Select a plan";
-  trainingPlanSelect.appendChild(option);
-
-  Object.entries(PLANS).forEach(([key, plan]) => {
-    const option = document.createElement("option");
-    option.value = plan.id;
-    option.textContent = plan.name;
-    if (plan.id === State.planId) {
-      option.selected = true;
-    }
+  generatePlanSelectOptions(PLANS, State.planId).forEach(option => {
     trainingPlanSelect.appendChild(option);
   });
 

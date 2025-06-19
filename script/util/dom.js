@@ -87,7 +87,7 @@ function generateCalendarCell(day, config) {
   return workoutContainer;
 }
 
-export function generateDateRow(week, weekIndex, trainingStartDate, plan) {
+function generateDateRow(week, weekIndex, trainingStartDate, plan) {
   const weekStartDate = trainingStartDate.add({ weeks: weekIndex });
   const totalMiles = week.reduce((acc, day) => acc + day.distance, 0);
   const numWeeksInPlan = plan.weeks.length;
@@ -106,4 +106,43 @@ export function generateCalendarWeekRows(week, weekIndex, trainingStartDate, pla
   week.forEach((day) => row.appendChild(generateCalendarCell(day, plan)));
 
   return [dateRow, row];
+}
+
+export function generatePlanSelectOptions(plans, currentPlanId) {
+  const options = [];
+  const emptyOption = document.createElement("option");
+  emptyOption.value = "";
+  emptyOption.textContent = "Select a plan";
+  options.push(emptyOption);
+
+  Object.entries(plans).forEach(([key, plan]) => {
+    const option = document.createElement("option");
+    option.value = plan.id;
+    option.textContent = plan.name;
+    if (plan.id === currentPlanId) {
+      option.selected = true;
+    }
+    options.push(option);
+  });
+
+  return options;
+}
+
+export function createDownloadElement(fileData, fileName) {
+  const file = "data:text/calendar;charset=utf-8," + encodeURIComponent(fileData);
+  // const filename = `${plan.name}-${raceDate}.ics`;
+
+  const saveBtn = document.createElement("a");
+  saveBtn.rel = "noopener";
+  saveBtn.href = file;
+  saveBtn.target = "_blank";
+  saveBtn.download = fileName;
+  const evt = new MouseEvent("click", {
+    view: window,
+    button: 0,
+    bubbles: true,
+    cancelable: false,
+  });
+  saveBtn.dispatchEvent(evt);
+  (window.URL || window.webkitURL).revokeObjectURL(saveBtn.href);
 }
